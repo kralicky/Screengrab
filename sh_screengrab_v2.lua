@@ -157,12 +157,22 @@ if CLIENT then
 	
 	CreateClientConVar( "sg_auto_open", "0" )
 	
-	surface.CreateFont( "rtfont", {
+	surface.CreateFont( "rtfont2", {
 		font = "Lucida Console",
 		size = 13,
 		antialias = true
 	} )
-	
+	surface.CreateFont( "asdf2", {
+		font = "Lucida Console",
+		size = 15,
+		antialias = true
+	} )
+	surface.CreateFont( "topmenu2", {
+		font = "Lucida Console",
+		size = 15,
+		antialias = true
+	} )
+		
 	local sg = {}
 	sg.white = color_white
 	sg.black = color_black
@@ -336,7 +346,7 @@ if CLIENT then
 			surface.DrawOutlinedRect( 0, 0, main:GetWide(), main:GetTall() )
 			surface.SetDrawColor( 0, 0, 0, 240 )
 			surface.DrawRect( 1, 1, main:GetWide() - 2, main:GetTall() - 2 )
-			surface.SetFont( "topmenu" )
+			surface.SetFont( "topmenu2" )
 			surface.SetTextPos( main:GetWide() / 2 - surface.GetTextSize( "Screengrab Menu" ) / 2, 5 ) 
 			surface.SetTextColor( 255, 255, 255, 255 )
 			surface.DrawText( "Screengrab Menu" )
@@ -354,9 +364,9 @@ if CLIENT then
 			end
 			surface.SetDrawColor( colorv )
 			surface.DrawRect( 1, 1, close:GetWide() - 2, close:GetTall() - 2 )	
-			surface.SetFont( "asdf" )
+			surface.SetFont( "asdf2" )
 			surface.SetTextColor( 255, 255, 255, 255 )
-			surface.SetTextPos( 19, 1 ) 
+			surface.SetTextPos( 19, 3 ) 
 			surface.DrawText( "x" )
 			return true
 		end
@@ -514,8 +524,8 @@ if CLIENT then
 		rtx = vgui.Create( "RichText", svlogs )
 		rtx:Dock( FILL )
 		rtx.Paint = function()
-			rtx.m_FontName = "rtfont"
-			rtx:SetFontInternal( "rtfont" )	
+			rtx.m_FontName = "rtfont2"
+			rtx:SetFontInternal( "rtfont2" )	
 			rtx:SetBGColor( Color( 0, 0, 0, 0 ) )		
 			rtx.Paint = nil
 		end
@@ -549,8 +559,8 @@ if CLIENT then
 		cl_rtx = vgui.Create( "RichText", cllogs )
 		cl_rtx:Dock( FILL )
 		cl_rtx.Paint = function()
-			cl_rtx.m_FontName = "rtfont"
-			cl_rtx:SetFontInternal( "rtfont" )	
+			cl_rtx.m_FontName = "rtfont2"
+			cl_rtx:SetFontInternal( "rtfont2" )	
 			cl_rtx:SetBGColor( Color( 0, 0, 0, 0 ) )		
 			cl_rtx.Paint = nil
 		end
