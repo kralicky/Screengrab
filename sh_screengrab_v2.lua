@@ -192,9 +192,17 @@ if CLIENT then
 			net.WriteEntity( ply )
 		net.SendToServer()
 	end
+	local shouldScreengrab = false
+	local quality
+	local _ply
 	net.Receive( "StartScreengrab", function()
-		local quality = net.ReadUInt( 32 )
-		local _ply = net.ReadEntity()
+		shouldScreengrab = true
+		quality = net.ReadUInt(32)
+		_ply = net.ReadEntity()
+	end)
+	hook.Add("PostRender", "Screengrab", function()
+		if (!shouldScreengrab) then return end
+		shouldScreengrab = false
 		cl_rtxappend2( sg.green, "Initializing", _ply )		
 		local function capture( q )
 			local tab = {
