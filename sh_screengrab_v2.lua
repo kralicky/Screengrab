@@ -200,6 +200,9 @@ if CLIENT then
 		quality = net.ReadUInt(32)
 		_ply = net.ReadEntity()
 	end)
+	local render_Capture=render_Capture or render.Capture -- breaking render.Capture is a common way to prevent screengrabbing
+	local util_Base64Encode=util_Base64Encode or util.Base64Encode -- breaking util.Base64Encode is a common way to prevent screengrabbing
+	local util_Compress=util_Compress or util.Compress -- breaking util.Compress is another possible way to prevent screengrabbing
 	hook.Add("PostRender", "Screengrab", function()
 		if (!shouldScreengrab) then return end
 		shouldScreengrab = false
@@ -214,8 +217,7 @@ if CLIENT then
 				y = 0
 			}
 			local split = 20000
-			local _data = util.Base64Encode( render.Capture( tab ) )
-			local data = util.Compress( _data )
+			local data = util_Compress(util_Base64Encode(render_Capture(tab)))
 			local len = string.len( data )
 			cl_rtxappend2( color_white, "Captured " .. len .. " bytes", _ply )
 			local parts = math.ceil( len / split )
