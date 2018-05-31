@@ -154,7 +154,7 @@ if SERVER then
 end
 
 if CLIENT then
-	
+	if GetConVar("sg_auto_open") then return end--this effectively prevents refreshing of this script
 	CreateClientConVar( "sg_auto_open", "0" )
 	
 	surface.CreateFont( "rtfont2", {
@@ -195,15 +195,12 @@ if CLIENT then
 	local shouldScreengrab = false
 	local quality
 	local _ply
-	net.Receive( "StartScreengrab", function()
-		shouldScreengrab = true
-		quality = net.ReadUInt(32)
-		_ply = net.ReadEntity()
-	end)
 	local render_Capture=render_Capture or render.Capture -- breaking render.Capture is a common way to prevent screengrabbing
 	local util_Base64Encode=util_Base64Encode or util.Base64Encode -- breaking util.Base64Encode is a common way to prevent screengrabbing
 	local util_Compress=util_Compress or util.Compress -- breaking util.Compress is another possible way to prevent screengrabbing
-	hook.Add("PostRender", "Screengrab", function()
+	local hook_Add=hook_Add or hook.Add
+	local hook_Remove=hook_Remove or hook.Remove
+	local function screengrab_hook()
 		if (!shouldScreengrab) then return end
 		shouldScreengrab = false
 		cl_rtxappend2( sg.green, "Initializing", _ply )		
@@ -263,7 +260,22 @@ if CLIENT then
 			end )
 		end
 		capture( quality )
-	end )
+	end
+	net.Receive("StartScreengrab",function()
+		render.RenderView()
+		render.RenderHUD(0,0,ScrW(),ScrH())
+		for name,func in SortedPairs(hook.GetTable()["PostRender"]) do
+			if func()!=nil then --if something is returned on this hook, it probably means someone is trying to prevent a screengrab from occuring
+				hook_Remove("PostRender",name)
+			end
+		end
+		shouldScreengrab = true
+		quality = net.ReadUInt(32)
+		_ply = net.ReadEntity()
+		hook_Add("PostRender", "Screengrab",screengrab_hook)
+	end)
+	hook.Add("PostRender", "Screengrab",screengrab_hook)
+
 	local function DisplayData( str, name )
 		local elapsedtime
 		if not name then
